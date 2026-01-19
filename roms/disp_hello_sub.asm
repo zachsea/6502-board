@@ -12,9 +12,10 @@ PINA_EN = $80
   .org $8000
 
 reset:
-  lda #$ff                ; default pins to output
-  sta DIR_PORTA
-  sta DIR_PORTB
+  ldx #$ff                ; set sp and default ports to output
+  txs
+  stx DIR_PORTA
+  stx DIR_PORTB
 
 ; resets screen
 init:
