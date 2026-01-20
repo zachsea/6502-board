@@ -86,6 +86,8 @@ send_lcd_data:
 
 busy_check:
   pha                       ; store used registers
+  ; after my own attempt, ben made me realize it's better to have RW set first before pulsing!
+  lda #(PINA_RW)
   lda #(PINA_EN | PINA_RW)  ; put busy flag onto bus
   sta PORTA
   lda #%01111111            ; set DB7 to take input
