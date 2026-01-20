@@ -59,6 +59,7 @@ ready:
 ; parameter x -> inst
 send_lcd_inst:
   pha                     ; save used registers
+  jsr busy_check
   lda #0                  ; clear control bits
   sta PORTA
   stx PORTB               ; use instruction in x
@@ -70,8 +71,9 @@ send_lcd_inst:
   rts
 
 ; parameter x -> data
-send_lcd_data
+send_lcd_data:
   pha                       ; save used registers
+  jsr busy_check
   lda #0                    ; clear control bits
   sta PORTA
   stx PORTB                 ; use data in x
@@ -79,6 +81,23 @@ send_lcd_data
   sta PORTA
   lda #0                    ; re-clear control bits
   sta PORTA
+  pla                       ; restore used registers
+  rts
+
+busy_check:
+  pha                       ; store used registers
+  lda #(PINA_EN | PINA_RW)  ; put busy flag onto bus
+  sta PORTA
+  lda #%01111111            ; set DB7 to take input
+  sta DIR_PORTB
+while_busy:
+  lda PORTB
+  asl                       ; shift DB7 into carry, 1 -> busy
+  bcs while_busy
+  lda #0                    ; clear control bits
+  sta PORTA
+  lda #$ff                  ; reset LCD data pins to out
+  sta DIR_PORTB
   pla                       ; restore used registers
   rts
 
