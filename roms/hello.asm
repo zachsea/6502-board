@@ -9,7 +9,7 @@ PINA_RS = $20
 PINA_RW = $40
 PINA_EN = $80
 
-  .org $8000
+.segment "CODE"
 
 reset:
   ldx #$ff                ; set sp and default ports to output
@@ -101,7 +101,7 @@ spinloop:
 
 msg_str: .asciiz "hello!!"
 
-  ; reset vector + pad file to 32k
-  .org  $fffc
-  .word reset
-  .word $0000
+.segment "VECTORS"
+.word $0000   ; NMI
+.word reset   ; reset
+.word $0000   ; IRQ
