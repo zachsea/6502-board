@@ -38,22 +38,14 @@ ready:
   ldx #%00001111          ; display control
   jsr send_lcd_inst
 
-  ldx #"h"
+  ldy #0
+print_loop:
+  ldx msg_str,y
+  beq print_end
   jsr send_lcd_data
-  ldx #"e"
-  jsr send_lcd_data
-  ldx #"l"
-  jsr send_lcd_data
-  ldx #"l"
-  jsr send_lcd_data
-  ldx #"o"
-  jsr send_lcd_data
-  ldx #"!"
-  jsr send_lcd_data
-  ldx #"!"
-  jsr send_lcd_data
-  ldx #"!"
-
+  iny
+  jmp print_loop
+print_end:
   jmp spinloop
 
 ; parameter x -> inst
@@ -106,6 +98,8 @@ while_busy:
 spinloop:
   nop
   jmp spinloop
+
+msg_str: .asciiz "hello!!"
 
   ; reset vector + pad file to 32k
   .org  $fffc
