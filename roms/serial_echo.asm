@@ -81,6 +81,7 @@ rx_wait:
 ; parameter x -> char
 send_uart_char:
   pha
+  jsr tx_delay
   stx UART_DATA
 tx_wait:
   lda UART_STAT
@@ -92,7 +93,7 @@ tx_wait:
 
 tx_delay:
   phx
-  ldx #250                ; theoretically ~1040 cycles @ 2mhz needed for 520us, more in reality
+  ldx #200                ; theoretically ~1040 cycles @ 2mhz needed for 520us, more in reality
 tx_delay_1:
   dex
   bne tx_delay_1
